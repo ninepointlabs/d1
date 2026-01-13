@@ -1,0 +1,52 @@
+version: 2
+project_name: d1
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+nfpms:
+  - id: d1
+    package_name: d1
+    vendor: "Tim's CLI Tools"
+    homepage: "https://github.com/timappledotcom/d1"
+    maintainer: "Tim <tim@example.com>"
+    description: "Day One Journal CLI for Linux"
+    license: "MIT"
+    formats:
+      - deb
+      - rpm
+      - archlinux
+    
+    # Arch Linux specific configuration
+    dependencies:
+      - git
+    recommends:
+      - gnome-keyring
